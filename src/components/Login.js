@@ -2,19 +2,58 @@
 import React, { useRef, useState } from "react";
 import Header from "./Header";
 import { checkValidData } from "../utils/validate";
+import {
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
+} from "firebase/auth";
+import { auth } from "../utils/firebase";
 
 const Login = () => {
   const [isSignIn, setIsSignUp] = useState(true);
-  const [errorMessage, setErrorMessage] =useState(null)
+  const [errorMessage, setErrorMessage] = useState(null);
 
   const email = useRef(null);
   const password = useRef(null);
 
   const handleButtonClick = () => {
     // validate form data
-
     const message = checkValidData(email.current.value, password.current.value);
     setErrorMessage(message);
+
+    if (message) return;
+    if (!isSignIn) {
+      //SignUp logic
+      createUserWithEmailAndPassword(
+        auth,
+        email.current.value,
+        password.current.value
+      )
+        .then((userCredential) => {
+          const user = userCredential.user;
+          console.log(user);
+        })
+        .catch((error) => {
+          const errorCode = error.code;
+          const errorMessage = error.message;
+          setErrorMessage(errorCode + "-" + errorMessage);
+        });
+    } else {
+      //SignIn logic
+      signInWithEmailAndPassword(
+        auth,
+        email.current.value,
+        password.current.value
+      )
+        .then((userCredential) => {
+          const user = userCredential.user;
+          console.log(user);
+        })
+        .catch((error) => {
+          const errorCode = error.code;
+          const errorMessage = error.message;
+          setErrorMessage("Invalid Credentials");
+        });
+    }
   };
 
   const toggleSignUpForm = () => {
@@ -31,7 +70,10 @@ const Login = () => {
           alt="bg-image"
         />
       </div>
-      <form onSubmit={(e) => e.preventDefault()} className="absolute rounded-md text-white bg-black bg-opacity-80 w-[30%] p-12 my-28 mx-auto right-0 left-0">
+      <form
+        onSubmit={(e) => e.preventDefault()}
+        className="absolute rounded-md text-white bg-black bg-opacity-80 w-[30%] p-12 my-28 mx-auto right-0 left-0"
+      >
         <h1 className="text-3xl font-bold my-5">
           {isSignIn ? "Sign In" : "Sign Up"}
         </h1>
@@ -54,7 +96,9 @@ const Login = () => {
           type="password"
           placeholder="Password"
         />
-        <p className="text-red-800 text-sm font-semibold mt-1 ">{errorMessage}</p>
+        <p className="text-red-800 text-sm font-semibold mt-1 ">
+          {errorMessage}
+        </p>
         <button
           className="p-2 my-4 bg-[#e50914] w-full text-lg rounded-md"
           onClick={handleButtonClick}
