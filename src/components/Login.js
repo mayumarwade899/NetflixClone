@@ -6,6 +6,7 @@ import { checkValidData } from "../utils/validate";
 import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
+  updateProfile,
 } from "firebase/auth";
 import { auth } from "../utils/firebase";
 import { useNavigate } from "react-router-dom";
@@ -15,12 +16,16 @@ const Login = () => {
   const [errorMessage, setErrorMessage] = useState(null);
   const navigate = useNavigate();
 
+  const name = useRef(null);
   const email = useRef(null);
   const password = useRef(null);
 
   const handleButtonClick = () => {
     // validate form data
-    const message = checkValidData(email.current.value, password.current.value);
+    const message = checkValidData(
+      email.current.value,
+      password.current.value,
+    );
     setErrorMessage(message);
 
     if (message) return;
