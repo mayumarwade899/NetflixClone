@@ -22,10 +22,7 @@ const Login = () => {
 
   const handleButtonClick = () => {
     // validate form data
-    const message = checkValidData(
-      email.current.value,
-      password.current.value,
-    );
+    const message = checkValidData(email.current.value, password.current.value);
     setErrorMessage(message);
 
     if (message) return;
@@ -38,7 +35,6 @@ const Login = () => {
       )
         .then((userCredential) => {
           const user = userCredential.user;
-          navigate("/browse");
         })
         .catch((error) => {
           const errorCode = error.code;

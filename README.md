@@ -14,6 +14,7 @@
 - Implement Aunthentication for SignIn/SignUp
 - Created Redux store with userSlice
 - Implemented SignOut
+- BugFix: If the user is not loggedIn redirect /browse to Login page & vice-versa
 
 # Features
 
